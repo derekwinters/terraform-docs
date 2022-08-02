@@ -26,6 +26,7 @@ type Config struct {
 	File         string       `mapstructure:"-"`
 	Formatter    string       `mapstructure:"formatter"`
 	Version      string       `mapstructure:"version"`
+	Examples     bool         `mapstructure:"examples"`
 	HeaderFrom   string       `mapstructure:"header-from"`
 	FooterFrom   string       `mapstructure:"footer-from"`
 	Recursive    recursive    `mapstructure:"recursive"`
@@ -42,6 +43,7 @@ type Config struct {
 // NewConfig returns neew instancee of Config with empty values.
 func NewConfig() *Config {
 	return &Config{
+		Examples:     false,
 		HeaderFrom:   "main.tf",
 		Recursive:    recursive{},
 		Sections:     sections{},
@@ -58,6 +60,7 @@ func DefaultConfig() *Config {
 		File:         "",
 		Formatter:    "",
 		Version:      "",
+		Examples:     false,
 		HeaderFrom:   "main.tf",
 		FooterFrom:   "",
 		Recursive:    defaultRecursive(),
@@ -94,6 +97,7 @@ func (r *recursive) validate() error {
 const (
 	sectionAll          = "all"
 	sectionDataSources  = "data-sources"
+	sectionExamples     = "examples"
 	sectionFooter       = "footer"
 	sectionHeader       = "header"
 	sectionInputs       = "inputs"
@@ -107,6 +111,7 @@ const (
 var allSections = []string{
 	sectionAll,
 	sectionDataSources,
+	sectionExamples,
 	sectionFooter,
 	sectionHeader,
 	sectionInputs,
@@ -125,6 +130,7 @@ type sections struct {
 	Hide []string `mapstructure:"hide"`
 
 	DataSources  bool
+	Examples     bool
 	Header       bool
 	Footer       bool
 	Inputs       bool
@@ -141,6 +147,7 @@ func defaultSections() sections {
 		Hide: []string{},
 
 		DataSources:  true,
+		Examples:     false,
 		Header:       true,
 		Footer:       false,
 		Inputs:       true,
@@ -420,6 +427,7 @@ func (s *settings) validate() error {
 func (c *Config) Parse() {
 	// sections
 	c.Sections.DataSources = c.Sections.visibility("data-sources")
+	c.Sections.Examples = c.Sections.visibility("examples")
 	c.Sections.Header = c.Sections.visibility("header")
 	c.Sections.Inputs = c.Sections.visibility("inputs")
 	c.Sections.ModuleCalls = c.Sections.visibility("modules")

@@ -31,6 +31,13 @@ func withContent(content string) generateFunc {
 	}
 }
 
+// withExamples specifies how the generator should add Examples.
+func withExamples(examples string) generateFunc {
+	return func(g *generator) {
+		g.examples = examples
+	}
+}
+
 // withHeader specifies how the generator should add Header.
 func withHeader(header string) generateFunc {
 	return func(g *generator) {
@@ -114,6 +121,7 @@ type generator struct {
 	content string
 
 	// individual sections
+	examples     string
 	header       string
 	footer       string
 	inputs       string
@@ -153,7 +161,10 @@ func newGenerator(config *print.Config, canRender bool, fns ...generateFunc) *ge
 // Content returns generted all the sections combined based on the underlying format.
 func (g *generator) Content() string { return g.content }
 
-// Header returns generted header section based on the underlying format.
+// examples returns generted examples section based on the underlying format.
+func (g *generator) Examples() string { return g.examples }
+
+// header returns generted header section based on the underlying format.
 func (g *generator) Header() string { return g.header }
 
 // Footer returns generted footer section based on the underlying format.
@@ -245,6 +256,7 @@ type generatorCallback func(string) generateFunc
 func (g *generator) forEach(render func(string) (string, error)) error {
 	mappings := map[string]generatorCallback{
 		"all":          withContent,
+		"examples":     withExamples,
 		"header":       withHeader,
 		"footer":       withFooter,
 		"inputs":       withInputs,

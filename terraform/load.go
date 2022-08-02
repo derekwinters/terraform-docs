@@ -55,6 +55,11 @@ func loadModule(path string) (*tfconfig.Module, error) {
 }
 
 func loadModuleItems(tfmodule *tfconfig.Module, config *print.Config) (*Module, error) {
+	examples, err := loadExamples(config)
+	if err != nil {
+		return nil, err
+	}
+
 	header, err := loadHeader(config)
 	if err != nil {
 		return nil, err
@@ -76,6 +81,7 @@ func loadModuleItems(tfmodule *tfconfig.Module, config *print.Config) (*Module, 
 	resources := loadResources(tfmodule, config)
 
 	return &Module{
+		Examples:     examples,
 		Header:       header,
 		Footer:       footer,
 		Inputs:       inputs,
@@ -113,6 +119,41 @@ func isFileFormatSupported(filename string, section string) (bool, error) {
 		return true, nil
 	}
 	return false, fmt.Errorf("only .adoc, .md, .tf, and .txt formats are supported to read %s from", section)
+}
+
+func loadExamples(config *print.Config) (string, error) {
+	if !config.Sections.Examples {
+		return "", nil
+	}
+
+	filePathString := filepath.Join(config.ModuleRoot, "examples")
+
+	// Initialize empty string to store results
+	resultContent := ""
+
+	err := filepath.Walk(filePathString, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+
+		if !info.IsDir() && info.Name() == "main.tf" {
+			content, err := os.ReadFile(path)
+			if err != nil {
+				panic(err)
+			}
+			resultContent = resultContent + "```hcl\n" + string(content) + "\n```\n"
+		}
+
+		return nil
+	})
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return strings.TrimSuffix(string(resultContent), "\n"), nil
+	//
+	//
 }
 
 func loadHeader(config *print.Config) (string, error) {
