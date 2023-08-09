@@ -1,4 +1,4 @@
-module github.com/terraform-docs/terraform-docs
+module github.com/derekwinters/terraform-docs
 
 go 1.16
 
@@ -35,6 +35,7 @@ require (
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/spf13/afero v1.9.2 // indirect
 	github.com/subosito/gotenv v1.4.0 // indirect
+	github.com/terraform-docs/terraform-docs v0.16.0
 	github.com/zclconf/go-cty v1.10.0 // indirect
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
 	golang.org/x/exp/typeparams v0.0.0-20220722155223-a9213eeb770e // indirect
