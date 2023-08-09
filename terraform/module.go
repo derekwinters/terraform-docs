@@ -18,6 +18,7 @@ import (
 type Module struct {
 	XMLName xml.Name `json:"-" toml:"-" xml:"module" yaml:"-"`
 
+  Examples     string         `json:"examples" toml:"examples" xml:"examples" yaml:"examples"`
 	Header       string         `json:"header" toml:"header" xml:"header" yaml:"header"`
 	Footer       string         `json:"footer" toml:"footer" xml:"footer" yaml:"footer"`
 	Inputs       []*Input       `json:"inputs" toml:"inputs" xml:"inputs>input" yaml:"inputs"`
@@ -29,6 +30,11 @@ type Module struct {
 
 	RequiredInputs []*Input `json:"-" toml:"-" xml:"-" yaml:"-"`
 	OptionalInputs []*Input `json:"-" toml:"-" xml:"-" yaml:"-"`
+}
+
+// HasExamples indicates if the module has examples.
+func (m *Module) HasExamples() bool {
+  return len(m.Examples) > 0
 }
 
 // HasHeader indicates if the module has header.

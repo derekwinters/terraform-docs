@@ -1,0 +1,9 @@
+{{- if .Config.Sections.Examples -}}
+    {{- indent 0 "#" }} Examples
+
+    {{ with .Module.Examples -}}
+        {{ sanitizeSection . }}
+        {{ printf "\n" }}
+    {{- end -}}
+
+{{ end -}}
